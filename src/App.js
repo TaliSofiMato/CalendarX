@@ -2,14 +2,14 @@
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-
+import Sidebar from './Sidebar'
 const myEventsList = [
   {
     id:'School', 
     title:'test on math',
     allDay: true,
-    start: '2022-08-07T04:00:00.000Z',
-    end:'2022-08-07T05:00:00.000Z',
+    start: '2022-08-08T04:00:00.000Z',
+    end:'2022-08-08T05:00:00.000Z',
   }, 
   {
     id:'Soccer', 
@@ -24,6 +24,7 @@ const localizer = momentLocalizer(moment)
 const MyCalendar = props => {
   return (
     <div>
+   <Sidebar/>
       <Calendar
         localizer={localizer}
         events={myEventsList}
