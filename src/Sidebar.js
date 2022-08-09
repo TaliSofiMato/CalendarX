@@ -14,10 +14,10 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
-import Toolbar from '@mui/material/Toolbar';
+// import Toolbar from '@mui/material/Toolbar';
 import { RadioGroup } from '@mui/material';
 import Radio from './Radio'
-
+import './Sidebar.css'
 const drawerWidth = 240;
 
 const Sidebar = (props) => {
@@ -30,9 +30,8 @@ const Sidebar = (props) => {
 
   const drawer = (
     <div>
-      <Toolbar />
+      <h1 className='sidebar-title'>Tasks</h1>
       <Divider />
-
       <RadioGroup
         name="radio-buttons-group"
       >
