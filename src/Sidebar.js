@@ -15,7 +15,8 @@ import ListItemText from '@mui/material/ListItemText';
 import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
+import { RadioGroup } from '@mui/material';
+import Radio from './Radio'
 
 const drawerWidth = 240;
 
@@ -31,19 +32,23 @@ const Sidebar = (props) => {
     <div>
       <Toolbar />
       <Divider />
-      <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
+
+      <RadioGroup
+        name="radio-buttons-group"
+      >
+        <List>
+          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text) => (
+            <ListItem key={text} disablePadding>
+              <ListItemButton>
+                <Radio value={text} label={text} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      </RadioGroup>
+
       <Divider />
+      {/* radio<></> */}
       <List>
         {['All mail', 'Trash', 'Spam'].map((text, index) => (
           <ListItem key={text} disablePadding>
