@@ -5,6 +5,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import Sidebar from './Sidebar'
 import Grid from '@mui/material/Grid';
 import {useState} from 'react'
+import Button from '@mui/material/Button';
 
 const myEventsList = [
   {
@@ -22,6 +23,10 @@ const myEventsList = [
     end:'2022-08-09T09:00:00.000Z',
   }
 ]
+
+const XComponent = () => {
+  return <>X</>
+}
 
 const localizer = momentLocalizer(moment)
 const MyCalendar = props => {
@@ -49,6 +54,9 @@ const MyCalendar = props => {
             myEventsList.filter(e => e.id === currentlySelected)
             : myEventsList
           }
+          components={{
+            eventWrapper: XComponent
+          }}
           startAccessor="start"
           endAccessor="end"
           style={{ height: 500 }}
