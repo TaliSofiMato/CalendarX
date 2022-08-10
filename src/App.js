@@ -4,6 +4,7 @@ import moment from 'moment'
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import Sidebar from './Sidebar'
 import Grid from '@mui/material/Grid';
+import {useState} from 'react'
 
 const myEventsList = [
   {
@@ -24,15 +25,20 @@ const myEventsList = [
 
 const localizer = momentLocalizer(moment)
 const MyCalendar = props => {
+  const [currentlySelected, setCurrentlySelected] = useState(null)
+
+  const handleSelect = (value) => {
+    setCurrentlySelected(value)
+  }
   return (
     <Grid container spacing={2} className='container'>
       <Grid item xs={2} className='sidebar'>
-        <Sidebar/>
+        <Sidebar handleSelect={handleSelect}/>
       </Grid>
       <Grid item  xs={10} className='calendar'>
         <Calendar
           localizer={localizer}
-          events={myEventsList}
+          events={myEventsList.filter(e => e.id === currentlySelected)}
           startAccessor="start"
           endAccessor="end"
           style={{ height: 500 }}

@@ -31,9 +31,9 @@ const Sidebar = (props) => {
         name="radio-buttons-group"
       >
         <List>
-          {['Exercise', 'Meal prep', 'Francisco Ready', 'Service Dog app'].map((text) => (
+          {['Soccer', 'School', 'Meal prep', 'Service Dog app'].map((text) => (
             <ListItem key={text} disablePadding>
-                <Radio  className='radio' value={text} label={text} />
+                <Radio handleSelect={props.handleSelect} className='radio' value={text} label={text} />
             </ListItem>
           ))}
         </List>

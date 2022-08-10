@@ -7,21 +7,22 @@ import {
 import * as React from 'react';
 import {useState} from 'react'
 
-const Radio = ({value, label}) => {
-    const [selectedRadio, setSelectedRadio] = useState();
+const Radio = ({value, label, handleSelect}) => {
+    const [currentlySelectedRadio, setCurrentlySelectedRadio] = useState();
 
     const radioHandler =(e) => {
-        setSelectedRadio(e.target.value)
+        handleSelect(e.target.value)
     }
 
     return (
         <> 
-                <FormControlLabel
-                    className={'radio'}
-                    control={<MUIRadio />}
-                    label={label}
-                    value={value}
-                    onChange={radioHandler} /> 
+            <FormControlLabel
+                className={'radio'}
+                control={<MUIRadio />}
+                label={label}
+                value={value}
+                onChange={radioHandler} 
+            /> 
         </>
     )
 }
