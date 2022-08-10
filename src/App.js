@@ -26,19 +26,29 @@ const myEventsList = [
 const localizer = momentLocalizer(moment)
 const MyCalendar = props => {
   const [currentlySelected, setCurrentlySelected] = useState(null)
-
+  const handleDeselect = (e) => {
+    setCurrentlySelected(null)
+  }
   const handleSelect = (value) => {
     setCurrentlySelected(value)
   }
   return (
     <Grid container spacing={2} className='container'>
       <Grid item xs={2} className='sidebar'>
-        <Sidebar handleSelect={handleSelect}/>
+        <Sidebar 
+        handleSelect={handleSelect} 
+        handleDeselect={handleDeselect}
+        currentlySelected={currentlySelected}
+        />
       </Grid>
       <Grid item  xs={10} className='calendar'>
         <Calendar
           localizer={localizer}
-          events={myEventsList.filter(e => e.id === currentlySelected)}
+          events={
+            currentlySelected ? 
+            myEventsList.filter(e => e.id === currentlySelected)
+            : myEventsList
+          }
           startAccessor="start"
           endAccessor="end"
           style={{ height: 500 }}

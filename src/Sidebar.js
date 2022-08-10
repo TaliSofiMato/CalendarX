@@ -13,6 +13,8 @@ import MailIcon from '@mui/icons-material/Mail';
 import { RadioGroup } from '@mui/material';
 import Radio from './Radio'
 import './Sidebar.css'
+import Button from '@mui/material/Button';
+
 const drawerWidth = 240;
 
 const Sidebar = (props) => {
@@ -29,6 +31,7 @@ const Sidebar = (props) => {
       <Divider />
       <RadioGroup
         name="radio-buttons-group"
+        value={props.currentlySelected}
       >
         <List>
           {['Soccer', 'School', 'Meal prep', 'Service Dog app'].map((text) => (
@@ -38,6 +41,7 @@ const Sidebar = (props) => {
           ))}
         </List>
       </RadioGroup>
+      <Button size="md" onClick={(props.handleDeselect)}>Deselect All</Button>
 
       <Divider />
       {/* radio<></> */}
