@@ -3,5 +3,7 @@
     display: inline-block;
 }
 .x-component {
-    font-size: 66px;
+    line-height: 55px;
+    font-size: 85px;
+    text-align: center;
 }
