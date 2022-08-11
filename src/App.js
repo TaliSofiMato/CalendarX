@@ -98,18 +98,29 @@ const myEventsList = [
 const XComponent = () => {
   return <div className='x-component'>X</div>
 }
-const checkboxComponent = (props) => {
-  return (
-  <>
-  <input type="checkbox"/>
-  <>{props.children}</>
-  </>
-  )
-}
+
 
 const localizer = momentLocalizer(moment)
 const MyCalendar = props => {
   const [currentlySelected, setCurrentlySelected] = useState(null)
+  const [checkboxChecked,setCheckboxChecked] = useState(null)
+
+  const checkboxComponent = (props) => {
+  
+    return (
+    <>
+    <input type="checkbox" name={props.event.id} onChange={handleCheckbox}/>
+    <>{props.children}</>
+    </>
+    )
+  }
+
+  const handleCheckbox = (e) => {
+    if (e.target.checked){
+    setCheckboxChecked(e.target.name)
+    }
+  }
+
   const handleDeselect = (e) => {
     setCurrentlySelected(null)
   }
