@@ -22,7 +22,21 @@ const myEventsList = [
     allDay: true,
     start: '2022-08-09T07:00:00.000Z',
     end: '2022-08-09T09:00:00.000Z',
-  }
+  },
+  {
+    id: 'Meal prep',
+    title: 'spagetti',
+    allDay: true,
+    start: '2022-08-15T07:00:00.000Z',
+    end: '2022-08-15T09:00:00.000Z',
+  },
+  {
+    id: 'Service Dog app',
+    title: 'work on app',
+    allDay: true,
+    start: '2022-08-25T07:00:00.000Z',
+    end: '2022-08-25T09:00:00.000Z',
+  },
 ]
 
 const XComponent = () => {
