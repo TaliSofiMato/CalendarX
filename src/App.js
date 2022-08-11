@@ -26,7 +26,7 @@ const myEventsList = [
 ]
 
 const XComponent = () => {
-  return <>X</>
+  return <div className='x-component'>X</div>
 }
 const checkboxComponent = (props) => {
   return (

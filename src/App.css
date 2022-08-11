@@ -2,3 +2,6 @@
     max-width: fit-content;
     display: inline-block;
 }
+.x-component {
+    font-size: 66px;
+}
