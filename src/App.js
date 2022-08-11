@@ -6,6 +6,7 @@ import Sidebar from './Sidebar'
 import Grid from '@mui/material/Grid';
 import { useState } from 'react'
 import Button from '@mui/material/Button';
+import './App.css'
 
 const myEventsList = [
   {
@@ -27,8 +28,13 @@ const myEventsList = [
 const XComponent = () => {
   return <>X</>
 }
-const checkboxComponent = () => {
-  return <>check</>
+const checkboxComponent = (props) => {
+  return (
+  <>
+  <input type="checkbox"/>
+  <>{props.children}</>
+  </>
+  )
 }
 
 const localizer = momentLocalizer(moment)
