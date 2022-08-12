@@ -112,9 +112,16 @@ const MyCalendar = props => {
   }
 
   const checkboxComponent = (props) => {
+    let isDisabled = new Date(props.event.start) > new Date()
     return (
       <>
-        <input type="checkbox" checked={checkboxChecked.includes(props.event)} name={props.event.id} onChange={(e) => {handleCheckbox(e, props.event)}} />
+        <input 
+          type="checkbox" 
+          checked={checkboxChecked.includes(props.event)} 
+          name={props.event.id} 
+          onChange={(e) => {handleCheckbox(e, props.event)}} 
+          disabled={isDisabled}
+        />
         <>{props.children}</>
       </>
     )
