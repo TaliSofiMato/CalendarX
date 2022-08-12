@@ -102,9 +102,6 @@ const myEventsList = [
   }
 ]
 
-
-
-
 const localizer = momentLocalizer(moment)
 const MyCalendar = props => {
   const [currentlySelected, setCurrentlySelected] = useState(null)
@@ -114,31 +111,32 @@ const MyCalendar = props => {
       return <div className='x-component'>X</div>
   }
 
-
   const checkboxComponent = useCallback((props) => {
     return (
       <>
-        <input type="checkbox" name={props.event.id} onChange={(e) => {handleCheckbox(e, props.event)}} />
+        <input type="checkbox" checked={checkboxChecked.includes(props.event)} name={props.event.id} onChange={(e) => {handleCheckbox(e, props.event)}} />
         <>{props.children}</>
       </>
     )
-  }, [])
+  }, [checkboxChecked])
 
   const handleCheckbox = (e, event) => {
     if (e.target.checked) {
       let copy = [...checkboxChecked]
       copy.push(event)
+      debugger
       setCheckboxChecked(copy)
     }
   }
 
   const handleDeselect = (e) => {
-    debugger
     setCurrentlySelected(null)
   }
+
   const handleSelect = (value) => {
     setCurrentlySelected(value)
   }
+
   return (
     <Grid container spacing={2} className='container'>
       <Grid item xs={2} className='sidebar'>
