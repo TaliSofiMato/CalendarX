@@ -4,7 +4,7 @@ import moment from 'moment'
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import Sidebar from './Sidebar'
 import Grid from '@mui/material/Grid';
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import Button from '@mui/material/Button';
 import './App.css'
 
@@ -92,36 +92,48 @@ const myEventsList = [
     allDay: true,
     start: '2022-08-11T07:00:00.000Z',
     end: '2022-08-11T09:00:00.000Z',
-  },
+  }, {
+    id: 'Service Dog app2',
+    title: 'work on app2',
+    allDay: true,
+    checked: false,
+    start: '2022-08-11T07:00:00.000Z',
+    end: '2022-08-11T09:00:00.000Z',
+  }
 ]
 
-const XComponent = () => {
-  return <div className='x-component'>X</div>
-}
+
 
 
 const localizer = momentLocalizer(moment)
 const MyCalendar = props => {
   const [currentlySelected, setCurrentlySelected] = useState(null)
-  const [checkboxChecked,setCheckboxChecked] = useState(null)
+  const [checkboxChecked, setCheckboxChecked] = useState([])
 
-  const checkboxComponent = (props) => {
-  
-    return (
-    <>
-    <input type="checkbox" name={props.event.id} onChange={handleCheckbox}/>
-    <>{props.children}</>
-    </>
-    )
+  const XComponent = () => {
+      return <div className='x-component'>X</div>
   }
 
-  const handleCheckbox = (e) => {
-    if (e.target.checked){
-    setCheckboxChecked(e.target.name)
+
+  const checkboxComponent = useCallback((props) => {
+    return (
+      <>
+        <input type="checkbox" name={props.event.id} onChange={(e) => {handleCheckbox(e, props.event)}} />
+        <>{props.children}</>
+      </>
+    )
+  }, [])
+
+  const handleCheckbox = (e, event) => {
+    if (e.target.checked) {
+      let copy = [...checkboxChecked]
+      copy.push(event)
+      setCheckboxChecked(copy)
     }
   }
 
   const handleDeselect = (e) => {
+    debugger
     setCurrentlySelected(null)
   }
   const handleSelect = (value) => {
@@ -139,23 +151,20 @@ const MyCalendar = props => {
       <Grid item xs={10} className='calendar'>
         <Calendar
           localizer={localizer}
-          events={
-            currentlySelected ? 
-            myEventsList.filter(e => e.id === currentlySelected)
-            : myEventsList
+          onSelectEvent={(e) => { handleCheckbox(e, props.event) }}
+          events={currentlySelected 
+              ? checkboxChecked.filter(e => e.id === currentlySelected)
+              : myEventsList
           }
-          
-            components = {{
-              
-                eventWrapper: currentlySelected ? XComponent
+          components={{
+            eventWrapper: currentlySelected 
+              ? XComponent
               : checkboxComponent
           }}
-        
-          
-        startAccessor="start"
-        endAccessor="end"
-        style={{ height: 500 }}
-      
+          startAccessor="start"
+          endAccessor="end"
+          style={{ height: 500 }}
+
         />
       </Grid>
     </Grid>
