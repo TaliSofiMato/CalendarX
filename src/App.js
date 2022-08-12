@@ -111,20 +111,19 @@ const MyCalendar = props => {
       return <div className='x-component'>X</div>
   }
 
-  const checkboxComponent = useCallback((props) => {
+  const checkboxComponent = (props) => {
     return (
       <>
         <input type="checkbox" checked={checkboxChecked.includes(props.event)} name={props.event.id} onChange={(e) => {handleCheckbox(e, props.event)}} />
         <>{props.children}</>
       </>
     )
-  }, [checkboxChecked])
+  }
 
   const handleCheckbox = (e, event) => {
     if (e.target.checked) {
       let copy = [...checkboxChecked]
       copy.push(event)
-      debugger
       setCheckboxChecked(copy)
     }
   }
