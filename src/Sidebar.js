@@ -14,6 +14,7 @@ import { RadioGroup } from '@mui/material';
 import Radio from './Radio'
 import './Sidebar.css'
 import Button from '@mui/material/Button';
+import NewEventDropDown from './NewEventDropDown'
 
 const drawerWidth = 240;
 
@@ -21,9 +22,14 @@ const Sidebar = (props) => {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
+
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+
+
+
 
   const drawer = (
     <div>
@@ -41,10 +47,11 @@ const Sidebar = (props) => {
           ))}
         </List>
       </RadioGroup>
-      <Button size="md" onClick={(props.handleDeselect)}>Deselect All</Button>
-
-      <Divider />
-      {/* radio<></> */}
+      <Button className="deselect-button button" size="md" onClick={(props.handleDeselect)}>Deselect All</Button>
+      <div>
+        <NewEventDropDown />
+        </div>
+      <Divider/>
       <List>
         {['All mail', 'Trash', 'Spam'].map((text, index) => (
           <ListItem key={text} disablePadding>

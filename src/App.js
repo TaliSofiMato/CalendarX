@@ -92,13 +92,6 @@ const myEventsList = [
     allDay: true,
     start: '2022-08-11T07:00:00.000Z',
     end: '2022-08-11T09:00:00.000Z',
-  }, {
-    id: 'Service Dog app2',
-    title: 'work on app2',
-    allDay: true,
-    checked: false,
-    start: '2022-08-11T07:00:00.000Z',
-    end: '2022-08-11T09:00:00.000Z',
   }
 ]
 
@@ -106,10 +99,14 @@ const localizer = momentLocalizer(moment)
 const MyCalendar = props => {
   const [currentlySelected, setCurrentlySelected] = useState(null)
   const [checkboxChecked, setCheckboxChecked] = useState([])
+  // const [anchorEl, setAnchorEl] = useState(null);
+  // const open = Boolean(anchorEl);
 
   const XComponent = () => {
       return <div className='x-component'>X</div>
   }
+  
+
 
   const checkboxComponent = (props) => {
     let isDisabled = new Date(props.event.start) > new Date()
@@ -143,6 +140,12 @@ const MyCalendar = props => {
     setCurrentlySelected(value)
   }
 
+  // const handleNewEvent = (e) => {
+    // open modal
+    //enter data
+    //save
+  // }
+
   return (
     <Grid container spacing={2} className='container'>
       <Grid item xs={2} className='sidebar'>
@@ -168,7 +171,6 @@ const MyCalendar = props => {
           startAccessor="start"
           endAccessor="end"
           style={{ height: 500 }}
-
         />
       </Grid>
     </Grid>
