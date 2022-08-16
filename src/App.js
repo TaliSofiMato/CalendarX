@@ -9,15 +9,14 @@ import Button from '@mui/material/Button';
 import './App.css'
 import { DateRange } from '@mui/icons-material';
 
-
-
 // Gets all the dates of the month for a particular weekday (Mon, Tues, etc)
 // based on its weekday index (0-6)
-function getDates(dayIndex) {
+const getDates = (dayIndex) => {
   var d = new Date(),
       month = d.getMonth(),
-      days = [];
+      dates = [];
 
+  // Set d to the 1st day of the month
   d.setDate(1);
 
   // Get the first of this weekday in the month
@@ -27,14 +26,12 @@ function getDates(dayIndex) {
 
   // Get all the others of this weekday in the month
   while (d.getMonth() === month) {
-      days.push(new Date(d.getTime()));
+      dates.push(new Date(d.getTime()));
       d.setDate(d.getDate() + 7);
   }
 
-  return days;
+  return dates;
 }
-
-
 
 const localizer = momentLocalizer(moment)
 const MyCalendar = props => {
@@ -76,7 +73,7 @@ const MyCalendar = props => {
   }, [eventTypes])
 
   const XComponent = () => {
-      return <div className='x-component'>X</div>
+    return <div className='x-component'>X</div>
   }
 
   const determineIfChecked = (event) => {
@@ -85,7 +82,7 @@ const MyCalendar = props => {
       (new Date(e.start).getDate() === new Date(event.start).getDate())
     })
 
-    return checkboxChecked.includes(props.event) || found
+    return checkboxChecked.includes(event) || found
   }
   
   const checkboxComponent = (props) => {
