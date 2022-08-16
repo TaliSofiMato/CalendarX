@@ -4,117 +4,99 @@ import moment from 'moment'
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import Sidebar from './Sidebar'
 import Grid from '@mui/material/Grid';
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Button from '@mui/material/Button';
 import './App.css'
+import { DateRange } from '@mui/icons-material';
 
-const myEventsList = [
-  {
-    id: 'School',
-    title: 'test on math',
-    allDay: true,
-    start: '2022-08-08T04:00:00.000Z',
-    end: '2022-08-08T05:00:00.000Z',
-  },
-  {
-    id: 'School',
-    title: 'test on chemistry',
-    allDay: true,
-    start: '2022-08-16T04:00:00.000Z',
-    end: '2022-08-16T05:00:00.000Z',
-  },
-  {
-    id: 'Soccer',
-    title: 'practice',
-    allDay: true,
-    start: '2022-08-09T07:00:00.000Z',
-    end: '2022-08-09T09:00:00.000Z',
-  },
-  {
-    id: 'Soccer',
-    title: 'practice',
-    allDay: true,
-    start: '2022-08-13T07:00:00.000Z',
-    end: '2022-08-13T09:00:00.000Z',
-  },
-  {
-    id: 'Soccer',
-    title: 'practice',
-    allDay: true,
-    start: '2022-08-17T07:00:00.000Z',
-    end: '2022-08-17T09:00:00.000Z',
-  },
-  {
-    id: 'Soccer',
-    title: 'practice',
-    allDay: true,
-    start: '2022-08-19T07:00:00.000Z',
-    end: '2022-08-19T09:00:00.000Z',
-  },
-  {
-    id: 'Meal prep',
-    title: 'spagetti',
-    allDay: true,
-    start: '2022-08-15T07:00:00.000Z',
-    end: '2022-08-15T09:00:00.000Z',
-  },
-  {
-    id: 'Meal prep',
-    title: 'egg muffins',
-    allDay: true,
-    start: '2022-08-21T07:00:00.000Z',
-    end: '2022-08-21T09:00:00.000Z',
-  },
-  {
-    id: 'Meal prep',
-    title: 'lasagna',
-    allDay: true,
-    start: '2022-08-29T07:00:00.000Z',
-    end: '2022-08-29T09:00:00.000Z',
-  },
-  {
-    id: 'Service Dog app',
-    title: 'work on app',
-    allDay: true,
-    start: '2022-08-25T07:00:00.000Z',
-    end: '2022-08-25T09:00:00.000Z',
-  },
-  {
-    id: 'Service Dog app',
-    title: 'work on app',
-    allDay: true,
-    start: '2022-08-27T07:00:00.000Z',
-    end: '2022-08-27T09:00:00.000Z',
-  },
-  {
-    id: 'Service Dog app',
-    title: 'work on app',
-    allDay: true,
-    start: '2022-08-11T07:00:00.000Z',
-    end: '2022-08-11T09:00:00.000Z',
+
+
+// Gets all the dates of the month for a particular weekday (Mon, Tues, etc)
+// based on its weekday index (0-6)
+function getDates(dayIndex) {
+  var d = new Date(),
+      month = d.getMonth(),
+      days = [];
+
+  d.setDate(1);
+
+  // Get the first of this weekday in the month
+  while (d.getDay() !== dayIndex) {
+      d.setDate(d.getDate() + 1);
   }
-]
+
+  // Get all the others of this weekday in the month
+  while (d.getMonth() === month) {
+      days.push(new Date(d.getTime()));
+      d.setDate(d.getDate() + 7);
+  }
+
+  return days;
+}
+
+
 
 const localizer = momentLocalizer(moment)
 const MyCalendar = props => {
   const [currentlySelected, setCurrentlySelected] = useState(null)
   const [checkboxChecked, setCheckboxChecked] = useState([])
-  // const [anchorEl, setAnchorEl] = useState(null);
-  // const open = Boolean(anchorEl);
+  const [eventTypes, setEventTypes] = useState([])
+  const [checkboxes, setCheckboxes] = useState([])
+  const [events, setEvents] = useState([])
+
+  useEffect(() => {
+    const eventTypes = [
+      {id: 1, title: "Soccer", days: ['Su', 'M', 'T', 'W', 'Th', 'F', 'S']},
+      {id: 2, title: "School", days: ['Su', 'M', 'T', 'W', 'Th', 'F', 'S']},
+      {id: 3, title: "Meal prep", days: ['Su', 'M', 'T', 'W', 'Th', 'F', 'S']},
+      {id: 4, title: "Service Dog app", days: ['Su', 'M', 'T', 'W', 'Th', 'F', 'S']}
+    ]
+    setEventTypes(eventTypes)
+  }, [])
+
+  useEffect(() => {
+    const savedEvents = [
+      {id: 1, title: "Soccer", start: new Date().setDate(1), end: new Date().setDate(1)}
+    ]
+    setEvents(savedEvents)
+  }, [])
+
+  useEffect(() => {
+    let eventCheckboxes = []
+    eventTypes.forEach((e) => {
+      let dates = []
+      e.days.forEach((d, i) => {
+        let days = getDates(i)
+        let mapped = days.map(d => { return {id: e.id, title: e.title, start: d, end: d} })
+        dates = [...dates, ...mapped]
+      })
+      eventCheckboxes = [...eventCheckboxes, ...dates]
+    })
+    setCheckboxes(eventCheckboxes)
+  }, [eventTypes])
 
   const XComponent = () => {
       return <div className='x-component'>X</div>
   }
+
+  const determineIfChecked = (event) => {
+    const found = events.find((e) => {
+      return (e.id === event.id) && 
+      (new Date(e.start).getDate() === new Date(event.start).getDate())
+    })
+
+    return checkboxChecked.includes(props.event) || found
+  }
   
-
-
   const checkboxComponent = (props) => {
     let isDisabled = new Date(props.event.start) > new Date()
+    const isChecked = determineIfChecked(props.event)
+    debugger
     return (
       <>
         <input 
           type="checkbox" 
-          checked={checkboxChecked.includes(props.event)} 
+          checked={determineIfChecked(props.event)} 
           name={props.event.id} 
           onChange={(e) => {handleCheckbox(e, props.event)}} 
           disabled={isDisabled}
@@ -140,12 +122,6 @@ const MyCalendar = props => {
     setCurrentlySelected(value)
   }
 
-  // const handleNewEvent = (e) => {
-    // open modal
-    //enter data
-    //save
-  // }
-
   return (
     <Grid container spacing={2} className='container'>
       <Grid item xs={2} className='sidebar'>
@@ -153,6 +129,7 @@ const MyCalendar = props => {
           handleSelect={handleSelect}
           handleDeselect={handleDeselect}
           currentlySelected={currentlySelected}
+          eventTypes={eventTypes.map(e => e.title)}
         />
       </Grid>
       <Grid item xs={10} className='calendar'>
@@ -160,8 +137,8 @@ const MyCalendar = props => {
           localizer={localizer}
           onSelectEvent={(e) => { handleCheckbox(e, props.event) }}
           events={currentlySelected 
-              ? checkboxChecked.filter(e => e.id === currentlySelected)
-              : myEventsList
+              ? checkboxChecked.filter(e => e.title === currentlySelected)
+              : checkboxes
           }
           components={{
             eventWrapper: currentlySelected 

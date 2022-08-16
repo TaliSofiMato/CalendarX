@@ -40,7 +40,7 @@ const Sidebar = (props) => {
         value={props.currentlySelected}
       >
         <List>
-          {['Soccer', 'School', 'Meal prep', 'Service Dog app'].map((text) => (
+          {props.eventTypes.map((text) => (
             <ListItem key={text} disablePadding>
                 <Radio handleSelect={props.handleSelect} className='radio' value={text} label={text} />
             </ListItem>
