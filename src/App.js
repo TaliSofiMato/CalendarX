@@ -104,9 +104,14 @@ const MyCalendar = props => {
   }
 
   const handleCheckbox = (e, event) => {
+    let copy = [...checkboxChecked]
     if (e.target.checked) {
-      let copy = [...checkboxChecked]
       copy.push(event)
+      setCheckboxChecked(copy)
+    } else {
+      let found = copy.find((e) => {return e === event})
+      let foundIndex =copy.indexOf(found)
+      copy.splice(foundIndex,1)
       setCheckboxChecked(copy)
     }
   }
