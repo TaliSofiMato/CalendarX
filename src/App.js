@@ -8,6 +8,7 @@ import { useCallback, useEffect, useState } from 'react'
 import Button from '@mui/material/Button';
 import './App.css'
 import { DateRange } from '@mui/icons-material';
+import {getAllEvents} from './APIs'
 
 // Gets all the dates of the month for a particular weekday (Mon, Tues, etc)
 // based on its weekday index (0-6)
@@ -52,10 +53,19 @@ const MyCalendar = props => {
   }, [])
 
   useEffect(() => {
-    const savedEvents = [
-      {id: 1, title: "Soccer", start: new Date().setDate(1), end: new Date().setDate(1)}
-    ]
-    setEvents(savedEvents)
+    const getAllEvents = async () =>{
+      let response
+      try{
+        response = await fetch('https://ixrapevm31.execute-api.us-east-1.amazonaws.com/dev/events')
+        response = await response.json()
+      } catch (e){
+        console.log(e.response.status)
+        response = e.response
+      }
+      setEvents(response)
+    }
+
+    getAllEvents()
   }, [])
 
   useEffect(() => {
@@ -88,7 +98,6 @@ const MyCalendar = props => {
   const checkboxComponent = (props) => {
     let isDisabled = new Date(props.event.start) > new Date()
     const isChecked = determineIfChecked(props.event)
-    debugger
     return (
       <>
         <input 
@@ -136,6 +145,7 @@ const MyCalendar = props => {
       </Grid>
       <Grid item xs={10} className='calendar'>
         <Calendar
+          style={{ height: '1500px' }}
           localizer={localizer}
           onSelectEvent={(e) => { handleCheckbox(e, props.event) }}
           events={currentlySelected 
