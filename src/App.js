@@ -8,7 +8,7 @@ import { useCallback, useEffect, useState } from 'react'
 import Button from '@mui/material/Button';
 import './App.css'
 import { DateRange } from '@mui/icons-material';
-import {getAllEvents} from './APIs'
+import {getAllEvents, postEvent} from './APIs'
 
 // Gets all the dates of the month for a particular weekday (Mon, Tues, etc)
 // based on its weekday index (0-6)
@@ -43,13 +43,20 @@ const MyCalendar = props => {
   const [events, setEvents] = useState([])
 
   useEffect(() => {
-    const eventTypes = [
-      {id: 1, title: "Soccer", days: ['Su', 'M', 'T', 'W', 'Th', 'F', 'S']},
-      {id: 2, title: "School", days: ['Su', 'M', 'T', 'W', 'Th', 'F', 'S']},
-      {id: 3, title: "Meal prep", days: ['Su', 'M', 'T', 'W', 'Th', 'F', 'S']},
-      {id: 4, title: "Service Dog app", days: ['Su', 'M', 'T', 'W', 'Th', 'F', 'S']}
-    ]
-    setEventTypes(eventTypes)
+    const getEventTypes = async () => {
+      let response = await fetch('https://ixrapevm31.execute-api.us-east-1.amazonaws.com/dev/event-types')
+      response = await response.json()
+      response = response.map((et) => { et.data = JSON.parse(et.data); return et})
+      setEventTypes(response)
+    }
+    // const eventTypes = [
+    //   {id: 1, title: "Soccer", days: ['Su', 'M', 'T', 'W', 'Th', 'F', 'S']},
+    //   {id: 2, title: "School", days: ['Su', 'M', 'T', 'W', 'Th', 'F', 'S']},
+    //   {id: 3, title: "Meal prep", days: ['Su', 'M', 'T', 'W', 'Th', 'F', 'S']},
+    //   {id: 4, title: "Service Dog app", days: ['Su', 'M', 'T', 'W', 'Th', 'F', 'S']}
+    // ]
+    // setEventTypes(eventTypes)
+    getEventTypes()
   }, [])
 
   useEffect(() => {
@@ -72,15 +79,25 @@ const MyCalendar = props => {
     let eventCheckboxes = []
     eventTypes.forEach((e) => {
       let dates = []
-      e.days.forEach((d, i) => {
+      e.data.days.forEach((d, i) => {
         let days = getDates(i)
-        let mapped = days.map(d => { return {id: e.id, title: e.title, start: d, end: d} })
+        let mapped = days.map(d => { return {id: e.id, title: e.data.title, start: d, end: d} })
         dates = [...dates, ...mapped]
       })
       eventCheckboxes = [...eventCheckboxes, ...dates]
     })
     setCheckboxes(eventCheckboxes)
   }, [eventTypes])
+
+  const postEvent = async (e) => {
+    let response
+    try{
+      response = await fetch(`https://ixrapevm31.execute-api.us-east-1.amazonaws.com/dev/events`, {method: 'post', body: JSON.stringify(e)})
+    } catch (e){
+      console.log(e.response.status)
+      response = e.response
+    }
+  }
 
   const XComponent = () => {
     return <div className='x-component'>X</div>
@@ -112,11 +129,12 @@ const MyCalendar = props => {
     )
   }
 
-  const handleCheckbox = (e, event) => {
+  const handleCheckbox = async (e, event) => {
     let copy = [...checkboxChecked]
     if (e.target.checked) {
       copy.push(event)
       setCheckboxChecked(copy)
+      await postEvent(event)
     } else {
       let found = copy.find((e) => {return e === event})
       let foundIndex =copy.indexOf(found)
@@ -140,7 +158,7 @@ const MyCalendar = props => {
           handleSelect={handleSelect}
           handleDeselect={handleDeselect}
           currentlySelected={currentlySelected}
-          eventTypes={eventTypes.map(e => e.title)}
+          eventTypes={eventTypes.map(e => e.data.title)}
         />
       </Grid>
       <Grid item xs={10} className='calendar'>
@@ -159,7 +177,6 @@ const MyCalendar = props => {
           }}
           startAccessor="start"
           endAccessor="end"
-          style={{ height: 500 }}
         />
       </Grid>
     </Grid>
