@@ -1,14 +1,10 @@
-// import './App.sass';
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import Sidebar from './Sidebar'
 import Grid from '@mui/material/Grid';
-import { useCallback, useEffect, useState } from 'react'
-import Button from '@mui/material/Button';
+import { useEffect, useState } from 'react'
 import './App.css'
-import { DateRange } from '@mui/icons-material';
-import {getAllEvents, postEvent} from './APIs'
 
 // Gets all the dates of the month for a particular weekday (Mon, Tues, etc)
 // based on its weekday index (0-6)
@@ -91,9 +87,6 @@ const MyCalendar = props => {
       response = e.response
     }
   }
-
-
-
   const XComponent = () => {
     return <div className='x-component'>X</div>
   }

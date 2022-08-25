@@ -4,7 +4,6 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import {
-    CheckBox as MUICheckbox,
     FormLabel,
     FormControlLabel,
     FormGroup,
