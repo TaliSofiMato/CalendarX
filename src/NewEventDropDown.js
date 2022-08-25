@@ -42,6 +42,7 @@ export default function BasicMenu() {
         setAnchorEl(event.currentTarget);
     };
     const handleTextField = (e) => {
+        debugger
         setEventype(e.target.value)
     };
     const handleCheckbox = (e) => {

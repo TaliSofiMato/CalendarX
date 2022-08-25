@@ -10,21 +10,21 @@ import './App.css'
 // based on its weekday index (0-6)
 const getDates = (dayIndex) => {
   var d = new Date(),
-      month = d.getMonth(),
-      dates = [];
+    month = d.getMonth(),
+    dates = [];
 
   // Set d to the 1st day of the month
   d.setDate(1);
 
   // Get the first of this weekday in the month
   while (d.getDay() !== dayIndex) {
-      d.setDate(d.getDate() + 1);
+    d.setDate(d.getDate() + 1);
   }
 
   // Get all the others of this weekday in the month
   while (d.getMonth() === month) {
-      dates.push(new Date(d.getTime()));
-      d.setDate(d.getDate() + 7);
+    dates.push(new Date(d.getTime()));
+    d.setDate(d.getDate() + 7);
   }
 
   return dates;
@@ -42,19 +42,19 @@ const MyCalendar = props => {
     const getEventTypes = async () => {
       let response = await fetch('https://ixrapevm31.execute-api.us-east-1.amazonaws.com/dev/event-types')
       response = await response.json()
-      response = response.map((et) => { et.data = JSON.parse(et.data); return et})
+      response = response.map((et) => { et.data = JSON.parse(et.data); return et })
       setEventTypes(response)
     }
     getEventTypes()
   }, [])
 
   useEffect(() => {
-    const getAllEvents = async () =>{
+    const getAllEvents = async () => {
       let response
-      try{
+      try {
         response = await fetch('https://ixrapevm31.execute-api.us-east-1.amazonaws.com/dev/events')
         response = await response.json()
-      } catch (e){
+      } catch (e) {
         console.log(e.response.status)
         response = e.response
       }
@@ -70,15 +70,17 @@ const MyCalendar = props => {
       let dates = []
       et.data.days.forEach((day, i) => {
         let days = getDates(i)
-        let mapped = days.map(d => { return {
-          start: d,
-          end: d,
-          title: et.data.title,
-          // data: {
-          //   title: et.data.title,
-          // }
-          // id: et.id, title: et.data.title, start: d, end: d
-        } })
+        let mapped = days.map(d => {
+          return {
+            start: d,
+            end: d,
+            title: et.data.title,
+            // data: {
+            //   title: et.data.title,
+            // }
+            // id: et.id, title: et.data.title, start: d, end: d
+          }
+        })
         dates = [...dates, ...mapped]
       })
       eventCheckboxes = [...eventCheckboxes, ...dates]
@@ -87,10 +89,19 @@ const MyCalendar = props => {
   }, [eventTypes])
 
   const postEvent = async (e) => {
+    debugger
     let response
-    try{
-      response = await fetch(`https://ixrapevm31.execute-api.us-east-1.amazonaws.com/dev/events`, {method: 'post', body: JSON.stringify(e)})
-    } catch (e){
+    try {
+      response = await fetch(`https://ixrapevm31.execute-api.us-east-1.amazonaws.com/dev/events`, {
+        method: 'post', body: JSON.stringify(
+          {
+            title: e.title,
+            start: e.start,
+            end: e.end,
+          }
+        )
+      })
+    } catch (e) {
       console.log(e.response.status)
       response = e.response
     }
@@ -101,23 +112,23 @@ const MyCalendar = props => {
 
   const determineIfChecked = (checkbox) => {
     const found = events.find((e) => {
-      return (e.data?.title === checkbox.title) && 
-      (new Date(e.data.start).getDate() === new Date(checkbox.start).getDate())
+      return (e.data?.title === checkbox.title) &&
+        (new Date(e.data.start).getDate() === new Date(checkbox.start).getDate())
     })
 
     return checkboxChecked.includes(event) || found
   }
-  
+
   const checkboxComponent = (props) => {
     let isDisabled = new Date(props.event.start) > new Date()
     const isChecked = determineIfChecked(props.event)
     return (
       <>
-        <input 
-          type="checkbox" 
-          checked={determineIfChecked(props.event)} 
-          name={props.event.id} 
-          onChange={(e) => {handleCheckbox(e, props.event)}} 
+        <input
+          type="checkbox"
+          checked={determineIfChecked(props.event)}
+          name={props.event.id}
+          onChange={(e) => { handleCheckbox(e, props.event) }}
           disabled={isDisabled}
         />
         <>{props.children}</>
@@ -132,9 +143,9 @@ const MyCalendar = props => {
       setCheckboxChecked(copy)
       await postEvent(event)
     } else {
-      let found = copy.find((e) => {return e === event})
-      let foundIndex =copy.indexOf(found)
-      copy.splice(foundIndex,1)
+      let found = copy.find((e) => { return e === event })
+      let foundIndex = copy.indexOf(found)
+      copy.splice(foundIndex, 1)
       setCheckboxChecked(copy)
     }
   }
@@ -162,12 +173,12 @@ const MyCalendar = props => {
           style={{ height: '1500px' }}
           localizer={localizer}
           onSelectEvent={(e) => { handleCheckbox(e, props.event) }}
-          events={currentlySelected 
-              ? checkboxChecked.filter(e => e.title === currentlySelected)
-              : checkboxes
+          events={currentlySelected
+            ? checkboxChecked.filter(e => e.title === currentlySelected)
+            : checkboxes
           }
           components={{
-            eventWrapper: currentlySelected 
+            eventWrapper: currentlySelected
               ? XComponent
               : checkboxComponent
           }}
