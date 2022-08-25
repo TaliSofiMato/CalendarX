@@ -66,11 +66,19 @@ const MyCalendar = props => {
 
   useEffect(() => {
     let eventCheckboxes = []
-    eventTypes.forEach((e) => {
+    eventTypes.forEach((et) => {
       let dates = []
-      e.data.days.forEach((d, i) => {
+      et.data.days.forEach((day, i) => {
         let days = getDates(i)
-        let mapped = days.map(d => { return {id: e.id, title: e.data.title, start: d, end: d} })
+        let mapped = days.map(d => { return {
+          start: d,
+          end: d,
+          title: et.data.title,
+          // data: {
+          //   title: et.data.title,
+          // }
+          // id: et.id, title: et.data.title, start: d, end: d
+        } })
         dates = [...dates, ...mapped]
       })
       eventCheckboxes = [...eventCheckboxes, ...dates]
@@ -91,10 +99,10 @@ const MyCalendar = props => {
     return <div className='x-component'>X</div>
   }
 
-  const determineIfChecked = (event) => {
+  const determineIfChecked = (checkbox) => {
     const found = events.find((e) => {
-      return (e.id === event.id) && 
-      (new Date(e.start).getDate() === new Date(event.start).getDate())
+      return (e.data?.title === checkbox.title) && 
+      (new Date(e.data.start).getDate() === new Date(checkbox.start).getDate())
     })
 
     return checkboxChecked.includes(event) || found
