@@ -49,13 +49,6 @@ const MyCalendar = props => {
       response = response.map((et) => { et.data = JSON.parse(et.data); return et})
       setEventTypes(response)
     }
-    // const eventTypes = [
-    //   {id: 1, title: "Soccer", days: ['Su', 'M', 'T', 'W', 'Th', 'F', 'S']},
-    //   {id: 2, title: "School", days: ['Su', 'M', 'T', 'W', 'Th', 'F', 'S']},
-    //   {id: 3, title: "Meal prep", days: ['Su', 'M', 'T', 'W', 'Th', 'F', 'S']},
-    //   {id: 4, title: "Service Dog app", days: ['Su', 'M', 'T', 'W', 'Th', 'F', 'S']}
-    // ]
-    // setEventTypes(eventTypes)
     getEventTypes()
   }, [])
 
@@ -98,6 +91,8 @@ const MyCalendar = props => {
       response = e.response
     }
   }
+
+
 
   const XComponent = () => {
     return <div className='x-component'>X</div>
