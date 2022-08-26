@@ -44,7 +44,7 @@ const Sidebar = (props) => {
       </RadioGroup>
       <Button className="deselect-button button" size="md" onClick={(props.handleDeselect)}>Deselect All</Button>
       <div>
-        <NewEventDropDown />
+        <NewEventDropDown updateEventTypes={props.updateEventTypes} />
         </div>
       <Divider/>
       <List>

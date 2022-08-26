@@ -37,6 +37,7 @@ const MyCalendar = props => {
   const [eventTypes, setEventTypes] = useState([])
   const [checkboxes, setCheckboxes] = useState([])
   const [events, setEvents] = useState([])
+  const [newEventType, setNewEventType] = useState(null)
 
   useEffect(() => {
     const getEventTypes = async () => {
@@ -46,7 +47,7 @@ const MyCalendar = props => {
       setEventTypes(response)
     }
     getEventTypes()
-  }, [])
+  }, [newEventType])
 
   useEffect(() => {
     const getAllEvents = async () => {
@@ -107,7 +108,6 @@ const MyCalendar = props => {
       return (e.data?.title === checkbox.title) &&
         (new Date(e.data.start).getDate() === new Date(checkbox.start).getDate())
     })
-    debugger
 
     return checkboxChecked.includes(checkbox) || found
   }
@@ -155,6 +155,7 @@ const MyCalendar = props => {
     <Grid container spacing={2} className='container'>
       <Grid item xs={2} className='sidebar'>
         <Sidebar
+          updateEventTypes={setNewEventType}
           handleSelect={handleSelect}
           handleDeselect={handleDeselect}
           currentlySelected={currentlySelected}

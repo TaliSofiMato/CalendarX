@@ -12,7 +12,7 @@ import './NewEventDropDown.css'
 import { useState } from 'react';
 
 
-export default function BasicMenu() {
+export default function BasicMenu(props) {
     const [eventType, setEventype] = useState('')
     const [eventDays, setEventDays] = useState('')
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -25,6 +25,7 @@ export default function BasicMenu() {
                 method: 'post', 
                 body: JSON.stringify(e) 
             })
+            props.updateEventTypes(response)
         } catch (e) {
             console.log(e.response.status)
             response = e.response
@@ -45,7 +46,6 @@ export default function BasicMenu() {
         setAnchorEl(event.currentTarget);
     };
     const handleTextField = (e) => {
-        debugger
         setEventype(e.target.value)
     };
     const handleCheckbox = (e) => {
