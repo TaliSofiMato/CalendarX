@@ -21,7 +21,10 @@ export default function BasicMenu() {
     const postEventType = async (e) => {
         let response
         try {
-            response = await fetch(`https://ixrapevm31.execute-api.us-east-1.amazonaws.com/dev/event-types`, { method: 'post', body: JSON.stringify(e) })
+            response = await fetch(`https://ixrapevm31.execute-api.us-east-1.amazonaws.com/dev/event-types`, { 
+                method: 'post', 
+                body: JSON.stringify(e) 
+            })
         } catch (e) {
             console.log(e.response.status)
             response = e.response
@@ -31,7 +34,7 @@ export default function BasicMenu() {
     const saveEventType = (e) => {
         postEventType({
             title: eventType,
-            days: eventDays
+            dayIndexes: eventDays
         })
         setAnchorEl(null);
     };
@@ -46,8 +49,17 @@ export default function BasicMenu() {
         setEventype(e.target.value)
     };
     const handleCheckbox = (e) => {
+        let dayIndexMap = {
+            'Su': 0,
+            'M': 1,
+            'T': 2,
+            'W': 3,
+            'Th': 4,
+            'F': 5,
+            'S': 6
+        }
         if (e.target.checked) {
-            let newEventDays = [...eventDays, e.target.name]
+            let newEventDays = [...eventDays, dayIndexMap[e.target.name]]
             setEventDays(newEventDays)
         } else {
             let newEventDays = eventDays.filter((day) => {

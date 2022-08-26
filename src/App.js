@@ -59,6 +59,7 @@ const MyCalendar = props => {
         response = e.response
       }
       setEvents(response)
+      setCheckboxChecked(response.map(r => r.data))
     }
 
     getAllEvents()
@@ -68,19 +69,9 @@ const MyCalendar = props => {
     let eventCheckboxes = []
     eventTypes.forEach((et) => {
       let dates = []
-      et.data.days.forEach((day, i) => {
-        let days = getDates(i)
-        let mapped = days.map(d => {
-          return {
-            start: d,
-            end: d,
-            title: et.data.title,
-            // data: {
-            //   title: et.data.title,
-            // }
-            // id: et.id, title: et.data.title, start: d, end: d
-          }
-        })
+      et.data.dayIndexes.forEach((dayIndex) => {
+        let days = getDates(dayIndex)
+        let mapped = days.map(d => ({start: d, end: d, title: et.data.title}))
         dates = [...dates, ...mapped]
       })
       eventCheckboxes = [...eventCheckboxes, ...dates]
@@ -89,11 +80,11 @@ const MyCalendar = props => {
   }, [eventTypes])
 
   const postEvent = async (e) => {
-    debugger
     let response
     try {
       response = await fetch(`https://ixrapevm31.execute-api.us-east-1.amazonaws.com/dev/events`, {
-        method: 'post', body: JSON.stringify(
+        method: 'post', 
+        body: JSON.stringify(
           {
             title: e.title,
             start: e.start,
@@ -106,6 +97,7 @@ const MyCalendar = props => {
       response = e.response
     }
   }
+
   const XComponent = () => {
     return <div className='x-component'>X</div>
   }
@@ -115,8 +107,9 @@ const MyCalendar = props => {
       return (e.data?.title === checkbox.title) &&
         (new Date(e.data.start).getDate() === new Date(checkbox.start).getDate())
     })
+    debugger
 
-    return checkboxChecked.includes(event) || found
+    return checkboxChecked.includes(checkbox) || found
   }
 
   const checkboxComponent = (props) => {
@@ -126,7 +119,7 @@ const MyCalendar = props => {
       <>
         <input
           type="checkbox"
-          checked={determineIfChecked(props.event)}
+          checked={isChecked}
           name={props.event.id}
           onChange={(e) => { handleCheckbox(e, props.event) }}
           disabled={isDisabled}
