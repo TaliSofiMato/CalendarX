@@ -23,7 +23,7 @@ const getDates = (dayIndex) => {
 
   // Get all the others of this weekday in the month
   while (d.getMonth() === month) {
-    dates.push(new Date(d.getTime()));
+    dates.push(new Date(d));
     d.setDate(d.getDate() + 7);
   }
 
@@ -38,6 +38,8 @@ const MyCalendar = props => {
   const [checkboxes, setCheckboxes] = useState([])
   const [events, setEvents] = useState([])
   const [newEventType, setNewEventType] = useState(null)
+  const [newEvent, setNewEvent] = useState(null)
+
 
   useEffect(() => {
     const getEventTypes = async () => {
@@ -64,7 +66,7 @@ const MyCalendar = props => {
     }
 
     getAllEvents()
-  }, [])
+  }, [newEvent])
 
   useEffect(() => {
     let eventCheckboxes = []
@@ -72,7 +74,7 @@ const MyCalendar = props => {
       let dates = []
       et.data.dayIndexes.forEach((dayIndex) => {
         let days = getDates(dayIndex)
-        let mapped = days.map(d => ({start: d, end: d, title: et.data.title}))
+        let mapped = days.map(d => { const dateString = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; return ({start: dateString, end: dateString, title: et.data.title}) })
         dates = [...dates, ...mapped]
       })
       eventCheckboxes = [...eventCheckboxes, ...dates]
@@ -93,10 +95,26 @@ const MyCalendar = props => {
           }
         )
       })
+      setNewEvent(response)
     } catch (e) {
       console.log(e.response.status)
       response = e.response
     }
+  }
+
+  const deleteEvent = async (id) => {
+    
+    let response
+    try {
+      response = await fetch(`https://ixrapevm31.execute-api.us-east-1.amazonaws.com/dev/events/${id}`, {
+        method: 'delete'
+      })
+    } catch (e) {
+      console.error(e)
+      // response = e.response
+    }
+    return response
+    
   }
 
   const XComponent = () => {
@@ -130,16 +148,22 @@ const MyCalendar = props => {
   }
 
   const handleCheckbox = async (e, event) => {
-    let copy = [...checkboxChecked]
+    let copy = [...events]
     if (e.target.checked) {
-      copy.push(event)
-      setCheckboxChecked(copy)
+      // copy.push(event)
+      // setCheckboxChecked(copy)
       await postEvent(event)
     } else {
-      let found = copy.find((e) => { return e === event })
-      let foundIndex = copy.indexOf(found)
-      copy.splice(foundIndex, 1)
-      setCheckboxChecked(copy)
+      let found = copy.find((e) => { 
+        return (e.data.start === event.start)
+            && (e.data.end === event.end)
+            && (e.data.title === event.title)
+      })
+      // let foundIndex = copy.indexOf(found)
+      // copy.splice(foundIndex, 1)
+      // setCheckboxChecked(copy)
+
+      await deleteEvent(found.sk)
     }
   }
 
