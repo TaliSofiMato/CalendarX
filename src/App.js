@@ -39,6 +39,7 @@ const MyCalendar = props => {
   const [events, setEvents] = useState([])
   const [newEventType, setNewEventType] = useState(null)
   const [newEvent, setNewEvent] = useState(null)
+  const [disabled, setDisabled] = useState(true)
 
 
   useEffect(() => {
@@ -111,11 +112,22 @@ const MyCalendar = props => {
       })
     } catch (e) {
       console.error(e)
-      // response = e.response
     }
     return response
     
   }
+
+  // const deleteEventType = async (id) => {
+  //   let response
+  //   try {
+  //     response = await fetch(`https://ixrapevm31.execute-api.us-east-1.amazonaws.com/dev/event-types/${id}`, {
+  //       method: 'delete'
+  //     })
+  //   } catch (e) {
+  //     console.error(e)
+  //   }
+  //   return response
+  // }
 
   const XComponent = () => {
     return <div className='x-component'>X</div>
@@ -168,12 +180,19 @@ const MyCalendar = props => {
   }
 
   const handleDeselect = (e) => {
+    setDisabled(true)
     setCurrentlySelected(null)
   }
 
   const handleSelect = (value) => {
+    setDisabled(false)
     setCurrentlySelected(value)
   }
+  // const handleDeleteEventType = async (e) => {
+
+  //   debugger
+  //   await deleteEventType()
+  // }
 
   return (
     <Grid container spacing={2} className='container'>
@@ -184,6 +203,8 @@ const MyCalendar = props => {
           handleDeselect={handleDeselect}
           currentlySelected={currentlySelected}
           eventTypes={eventTypes.map(e => e.data.title)}
+          disabled={disabled}
+          // handleDeleteEventType={handleDeleteEventType}
         />
       </Grid>
       <Grid item xs={10} className='calendar'>

@@ -37,16 +37,19 @@ const Sidebar = (props) => {
         <List>
           {props.eventTypes.map((text) => (
             <ListItem key={text} disablePadding>
-                <Radio handleSelect={props.handleSelect} className='radio' value={text} label={text} />
+              <Radio handleSelect={props.handleSelect} className='radio' value={text} label={text} />
             </ListItem>
           ))}
         </List>
       </RadioGroup>
-      <Button className="deselect-button button" size="md" onClick={(props.handleDeselect)}>Deselect All</Button>
+      <Button className="deselect-button button" size="md" disabled={props.disabled} onClick={(props.handleDeselect)}>Deselect All</Button>
       <div>
         <NewEventDropDown updateEventTypes={props.updateEventTypes} />
-        </div>
-      <Divider/>
+      </div>
+      {/* <div>
+        <Button className="deselect-button button" size="md" onClick={(props.handleDeleteEventType)}> Delete Event Type </Button>
+      </div> */}
+      <Divider />
       <List>
         {['All mail', 'Trash', 'Spam'].map((text, index) => (
           <ListItem key={text} disablePadding>
