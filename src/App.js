@@ -5,6 +5,17 @@ import Sidebar from './Sidebar'
 import Grid from '@mui/material/Grid';
 import { useEffect, useState } from 'react'
 import './App.css'
+import { Authenticator } from "@aws-amplify/ui-react";
+import '@aws-amplify/ui-react/styles.css';
+import  {Amplify} from 'aws-amplify';
+
+Amplify.configure({
+  Auth: {
+    region: "us-east-1",
+    userPoolId: "us-east-1_ABKrOn9rb",
+    userPoolWebClientId: "6viomjjgj7i8geglovesskj6s3",
+  },
+})
 
 // Gets all the dates of the month for a particular weekday (Mon, Tues, etc)
 // based on its weekday index (0-6)
@@ -44,7 +55,7 @@ const MyCalendar = props => {
 
   useEffect(() => {
     const getEventTypes = async () => {
-      let response = await fetch('https://ixrapevm31.execute-api.us-east-1.amazonaws.com/dev/event-types')
+      let response = await fetch('https://p7uexf3z1k.execute-api.us-east-1.amazonaws.com/dev/event-types')
       response = await response.json()
       response = response.map((et) => { et.data = JSON.parse(et.data); return et })
       setEventTypes(response)
@@ -56,7 +67,7 @@ const MyCalendar = props => {
     const getAllEvents = async () => {
       let response
       try {
-        response = await fetch('https://ixrapevm31.execute-api.us-east-1.amazonaws.com/dev/events')
+        response = await fetch('https://p7uexf3z1k.execute-api.us-east-1.amazonaws.com/dev/events')
         response = await response.json()
       } catch (e) {
         console.log(e.response.status)
@@ -75,7 +86,7 @@ const MyCalendar = props => {
       let dates = []
       et.data.dayIndexes.forEach((dayIndex) => {
         let days = getDates(dayIndex)
-        let mapped = days.map(d => { const dateString = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; return ({start: dateString, end: dateString, title: et.data.title}) })
+        let mapped = days.map(d => { const dateString = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; return ({ start: dateString, end: dateString, title: et.data.title }) })
         dates = [...dates, ...mapped]
       })
       eventCheckboxes = [...eventCheckboxes, ...dates]
@@ -86,8 +97,8 @@ const MyCalendar = props => {
   const postEvent = async (e) => {
     let response
     try {
-      response = await fetch(`https://ixrapevm31.execute-api.us-east-1.amazonaws.com/dev/events`, {
-        method: 'post', 
+      response = await fetch(`https://p7uexf3z1k.execute-api.us-east-1.amazonaws.com/dev/events`, {
+        method: 'post',
         body: JSON.stringify(
           {
             title: e.title,
@@ -104,17 +115,17 @@ const MyCalendar = props => {
   }
 
   const deleteEvent = async (id) => {
-    
+
     let response
     try {
-      response = await fetch(`https://ixrapevm31.execute-api.us-east-1.amazonaws.com/dev/events/${id}`, {
+      response = await fetch(`https://p7uexf3z1k.execute-api.us-east-1.amazonaws.com/dev/events/${id}`, {
         method: 'delete'
       })
     } catch (e) {
       console.error(e)
     }
     return response
-    
+
   }
 
   // const deleteEventType = async (id) => {
@@ -166,10 +177,10 @@ const MyCalendar = props => {
       // setCheckboxChecked(copy)
       await postEvent(event)
     } else {
-      let found = copy.find((e) => { 
+      let found = copy.find((e) => {
         return (e.data.start === event.start)
-            && (e.data.end === event.end)
-            && (e.data.title === event.title)
+          && (e.data.end === event.end)
+          && (e.data.title === event.title)
       })
       // let foundIndex = copy.indexOf(found)
       // copy.splice(foundIndex, 1)
@@ -195,37 +206,41 @@ const MyCalendar = props => {
   // }
 
   return (
-    <Grid container spacing={2} className='container'>
-      <Grid item xs={2} className='sidebar'>
-        <Sidebar
-          updateEventTypes={setNewEventType}
-          handleSelect={handleSelect}
-          handleDeselect={handleDeselect}
-          currentlySelected={currentlySelected}
-          eventTypes={eventTypes.map(e => e.data.title)}
-          disabled={disabled}
-          // handleDeleteEventType={handleDeleteEventType}
-        />
-      </Grid>
-      <Grid item xs={10} className='calendar'>
-        <Calendar
-          style={{ height: '1500px' }}
-          localizer={localizer}
-          onSelectEvent={(e) => { handleCheckbox(e, props.event) }}
-          events={currentlySelected
-            ? checkboxChecked.filter(e => e.title === currentlySelected)
-            : checkboxes
-          }
-          components={{
-            eventWrapper: currentlySelected
-              ? XComponent
-              : checkboxComponent
-          }}
-          startAccessor="start"
-          endAccessor="end"
-        />
-      </Grid>
-    </Grid>
+    <Authenticator>
+      {({ signOut, user }) => (
+        <Grid container spacing={2} className='container'>
+          <Grid item xs={2} className='sidebar'>
+            <Sidebar
+              updateEventTypes={setNewEventType}
+              handleSelect={handleSelect}
+              handleDeselect={handleDeselect}
+              currentlySelected={currentlySelected}
+              eventTypes={eventTypes.map(e => e.data.title)}
+              disabled={disabled}
+            // handleDeleteEventType={handleDeleteEventType}
+            />
+          </Grid>
+          <Grid item xs={10} className='calendar'>
+            <Calendar
+              style={{ height: '1500px' }}
+              localizer={localizer}
+              onSelectEvent={(e) => { handleCheckbox(e, props.event) }}
+              events={currentlySelected
+                ? checkboxChecked.filter(e => e.title === currentlySelected)
+                : checkboxes
+              }
+              components={{
+                eventWrapper: currentlySelected
+                  ? XComponent
+                  : checkboxComponent
+              }}
+              startAccessor="start"
+              endAccessor="end"
+            />
+          </Grid>
+        </Grid>
+      )}
+    </Authenticator>
   )
 }
 

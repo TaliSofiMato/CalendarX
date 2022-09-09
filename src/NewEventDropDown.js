@@ -21,7 +21,7 @@ export default function BasicMenu(props) {
     const postEventType = async (e) => {
         let response
         try {
-            response = await fetch(`https://ixrapevm31.execute-api.us-east-1.amazonaws.com/dev/event-types`, { 
+            response = await fetch(`https://p7uexf3z1k.execute-api.us-east-1.amazonaws.com/dev/event-types`, { 
                 method: 'post', 
                 body: JSON.stringify(e) 
             })
