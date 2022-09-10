@@ -44,14 +44,13 @@ const getDates = (dayIndex) => {
 const localizer = momentLocalizer(moment)
 const MyCalendar = props => {
   const [currentlySelected, setCurrentlySelected] = useState(null)
-  const [checkboxChecked, setCheckboxChecked] = useState([])
   const [eventTypes, setEventTypes] = useState([])
   const [checkboxes, setCheckboxes] = useState([])
   const [events, setEvents] = useState([])
   const [newEventType, setNewEventType] = useState(null)
   const [newEvent, setNewEvent] = useState(null)
   const [disabled, setDisabled] = useState(true)
-
+  const [deletedEvent, setDeletedEvent] = useState(null)
 
   useEffect(() => {
     const getEventTypes = async () => {
@@ -80,14 +79,12 @@ const MyCalendar = props => {
         response = await response.json()
       } catch (e) {
         console.log(e)
-        // response = e.response
       }
       setEvents(response)
-      setCheckboxChecked(response.map(r => r.data))
     }
 
     getAllEvents()
-  }, [newEvent])
+  }, [newEvent, deletedEvent])
 
   useEffect(() => {
     let eventCheckboxes = []
@@ -95,7 +92,14 @@ const MyCalendar = props => {
       let dates = []
       et.data.dayIndexes.forEach((dayIndex) => {
         let days = getDates(dayIndex)
-        let mapped = days.map(d => { const dateString = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; return ({ start: dateString, end: dateString, title: et.data.title }) })
+        let mapped = days.map(d => { 
+          const dateString = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+          return { 
+            start: dateString,
+            end: dateString, 
+            title: et.data.title
+          } 
+        })
         dates = [...dates, ...mapped]
       })
       eventCheckboxes = [...eventCheckboxes, ...dates]
@@ -112,23 +116,19 @@ const MyCalendar = props => {
           Authorization : `Bearer ${user.signInUserSession.accessToken.jwtToken}`
         },
         method: 'post',
-        body: JSON.stringify(
-          {
-            title: e.title,
-            start: e.start,
-            end: e.end,
-          }
-        )
+        body: JSON.stringify({
+          title: e.title,
+          start: e.start,
+          end: e.end,
+        })
       })
       setNewEvent(response)
     } catch (e) {
       console.log(e)
-      // response = e.response
     }
   }
 
   const deleteEvent = async (id) => {
-
     let response
     try {
       response = await fetch(`https://ux2mlsj4y2.execute-api.us-east-1.amazonaws.com/events/${id}`, {
@@ -140,8 +140,7 @@ const MyCalendar = props => {
     } catch (e) {
       console.error(e)
     }
-    return response
-
+    setDeletedEvent(response)
   }
 
   // const deleteEventType = async (id) => {
@@ -157,6 +156,7 @@ const MyCalendar = props => {
   // }
 
   const XComponent = () => {
+    debugger
     return <div className='x-component'>X</div>
   }
 
@@ -166,7 +166,7 @@ const MyCalendar = props => {
         (new Date(e.data.start).getDate() === new Date(checkbox.start).getDate())
     })
 
-    return checkboxChecked.includes(checkbox) || found
+    return found
   }
 
   const checkboxComponent = (props) => {
@@ -187,21 +187,14 @@ const MyCalendar = props => {
   }
 
   const handleCheckbox = async (e, event) => {
-    let copy = [...events]
     if (e.target.checked) {
-      // copy.push(event)
-      // setCheckboxChecked(copy)
       await postEvent(event)
     } else {
-      let found = copy.find((e) => {
+      let found = events.find((e) => {
         return (e.data.start === event.start)
           && (e.data.end === event.end)
           && (e.data.title === event.title)
       })
-      // let foundIndex = copy.indexOf(found)
-      // copy.splice(foundIndex, 1)
-      // setCheckboxChecked(copy)
-
       await deleteEvent(found.sk)
     }
   }
@@ -220,7 +213,7 @@ const MyCalendar = props => {
   //   debugger
   //   await deleteEventType()
   // }
-
+debugger
   return (
     <Authenticator>
       {({ signOut, user }) => (
@@ -242,7 +235,7 @@ const MyCalendar = props => {
               localizer={localizer}
               onSelectEvent={(e) => { handleCheckbox(e, props.event) }}
               events={currentlySelected
-                ? checkboxChecked.filter(e => e.title === currentlySelected)
+                ? events.filter(e => e.data.title === currentlySelected).map(e => e.data)
                 : checkboxes
               }
               components={{
