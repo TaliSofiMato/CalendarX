@@ -116,16 +116,13 @@ const MyCalendar = props => {
           Authorization : `Bearer ${user.signInUserSession.accessToken.jwtToken}`
         },
         method: 'post',
-        body: JSON.stringify({
-          title: e.title,
-          start: e.start,
-          end: e.end,
-        })
+        body: JSON.stringify(e)
       })
-      setNewEvent(response)
+      // response = await response.json()
     } catch (e) {
       console.log(e)
     }
+    setNewEvent(response)
   }
 
   const deleteEvent = async (id) => {
@@ -137,6 +134,7 @@ const MyCalendar = props => {
         },
         method: 'delete'
       })
+      // response = await response.json()
     } catch (e) {
       console.error(e)
     }
@@ -156,7 +154,6 @@ const MyCalendar = props => {
   // }
 
   const XComponent = () => {
-    debugger
     return <div className='x-component'>X</div>
   }
 
@@ -166,7 +163,10 @@ const MyCalendar = props => {
         (new Date(e.data.start).getDate() === new Date(checkbox.start).getDate())
     })
 
-    return found
+    const justAdded = JSON.stringify(checkbox) === JSON.stringify(newEvent)
+    const justDeleted = JSON.stringify(checkbox) === JSON.stringify(deletedEvent)
+
+    return found || (justAdded && !justDeleted)
   }
 
   const checkboxComponent = (props) => {
@@ -213,7 +213,6 @@ const MyCalendar = props => {
   //   debugger
   //   await deleteEventType()
   // }
-debugger
   return (
     <Authenticator>
       {({ signOut, user }) => (
