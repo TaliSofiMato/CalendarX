@@ -3,13 +3,7 @@
 
 
 
-// Amplify.configure({
-//   Auth: {
-//     region: "us-east-1",
-//     userPoolId: "us-east-1_ABKrOn9rb",
-//     userPoolWebClientId: "6viomjjgj7i8geglovesskj6s3",
-//   },
-// })
+
 //     API: {
 //       endpoints: [
 //         {

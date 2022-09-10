@@ -7,13 +7,13 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import { Authenticator } from "@aws-amplify/ui-react";
 import '@aws-amplify/ui-react/styles.css';
-import  {Amplify} from 'aws-amplify';
+import  {Amplify, Auth} from 'aws-amplify';
 
 Amplify.configure({
   Auth: {
     region: "us-east-1",
-    userPoolId: "us-east-1_ABKrOn9rb",
-    userPoolWebClientId: "6viomjjgj7i8geglovesskj6s3",
+    userPoolId: "us-east-1_YYHllRBSL",
+    userPoolWebClientId: "7r34ckr14ph5vmabvslbjn9ie1",
   },
 })
 
@@ -55,9 +55,13 @@ const MyCalendar = props => {
 
   useEffect(() => {
     const getEventTypes = async () => {
-      let response = await fetch('https://p7uexf3z1k.execute-api.us-east-1.amazonaws.com/dev/event-types')
+      const user = await Amplify.Auth.currentAuthenticatedUser()
+      let response = await fetch('https://ux2mlsj4y2.execute-api.us-east-1.amazonaws.com/event-types', {
+        headers: {
+          Authorization : `Bearer ${user.signInUserSession.accessToken.jwtToken}`
+        },
+      })
       response = await response.json()
-      response = response.map((et) => { et.data = JSON.parse(et.data); return et })
       setEventTypes(response)
     }
     getEventTypes()
@@ -65,13 +69,18 @@ const MyCalendar = props => {
 
   useEffect(() => {
     const getAllEvents = async () => {
+      const user = await Amplify.Auth.currentAuthenticatedUser()
       let response
       try {
-        response = await fetch('https://p7uexf3z1k.execute-api.us-east-1.amazonaws.com/dev/events')
+        response = await fetch('https://ux2mlsj4y2.execute-api.us-east-1.amazonaws.com/events', {
+          headers: {
+            Authorization : `Bearer ${user.signInUserSession.accessToken.jwtToken}`
+          },
+        })
         response = await response.json()
       } catch (e) {
-        console.log(e.response.status)
-        response = e.response
+        console.log(e)
+        // response = e.response
       }
       setEvents(response)
       setCheckboxChecked(response.map(r => r.data))
@@ -95,9 +104,13 @@ const MyCalendar = props => {
   }, [eventTypes])
 
   const postEvent = async (e) => {
+    const user = await Amplify.Auth.currentAuthenticatedUser()
     let response
     try {
-      response = await fetch(`https://p7uexf3z1k.execute-api.us-east-1.amazonaws.com/dev/events`, {
+      response = await fetch(`https://ux2mlsj4y2.execute-api.us-east-1.amazonaws.com/events`, {
+        headers: {
+          Authorization : `Bearer ${user.signInUserSession.accessToken.jwtToken}`
+        },
         method: 'post',
         body: JSON.stringify(
           {
@@ -109,8 +122,8 @@ const MyCalendar = props => {
       })
       setNewEvent(response)
     } catch (e) {
-      console.log(e.response.status)
-      response = e.response
+      console.log(e)
+      // response = e.response
     }
   }
 
@@ -118,7 +131,10 @@ const MyCalendar = props => {
 
     let response
     try {
-      response = await fetch(`https://p7uexf3z1k.execute-api.us-east-1.amazonaws.com/dev/events/${id}`, {
+      response = await fetch(`https://ux2mlsj4y2.execute-api.us-east-1.amazonaws.com/events/${id}`, {
+        headers: {
+          Authorization : `Bearer ${Amplify.Auth.user.signInUserSession.accessToken.jwtToken}`
+        },
         method: 'delete'
       })
     } catch (e) {

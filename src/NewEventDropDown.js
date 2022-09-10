@@ -10,6 +10,7 @@ import {
 } from '@mui/material'
 import './NewEventDropDown.css'
 import { useState } from 'react';
+import  {Amplify} from 'aws-amplify';
 
 
 export default function BasicMenu(props) {
@@ -21,7 +22,10 @@ export default function BasicMenu(props) {
     const postEventType = async (e) => {
         let response
         try {
-            response = await fetch(`https://p7uexf3z1k.execute-api.us-east-1.amazonaws.com/dev/event-types`, { 
+            response = await fetch(`https://ux2mlsj4y2.execute-api.us-east-1.amazonaws.com/event-types`, { 
+                headers: {
+                    Authorization : `Bearer ${Amplify.Auth.user.signInUserSession.accessToken.jwtToken}`
+                },
                 method: 'post', 
                 body: JSON.stringify(e) 
             })
